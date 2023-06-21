@@ -1,0 +1,17 @@
+{
+  "name": "mod12-emptrack",
+  "version": "1.0.0",
+  "description": "Module 12 Challenge Employee Tracker SQL",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.4.0"
+  }
+}
