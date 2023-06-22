@@ -9,3 +9,17 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+//connect to database
+const db = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: 'rootroot',
+        database: 'emp_db'
+    },
+    console.log(`Connected to the emp_db database.`)
+);
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
