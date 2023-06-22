@@ -11,3 +11,8 @@ i'm an idiot
             id from role id (super/sub class? prob only cuz i understand the other one), title, $alary, dept id
             -dept-table link thru dept-id
                 -name
+
+-seed everyone is using chatgpt ._.
+
+server.js
+

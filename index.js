@@ -1,6 +1,6 @@
 //inquirer bullshit in here then export to server or w/e
 import inquirer from "inquirer";
-const express = require('express');
+
 const questions = [
     {
         type: 'input',
