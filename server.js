@@ -66,7 +66,7 @@ const selector = () => {
     });
 };
 const exit = () => {
-    console.log('Goodbye!')
+    console.log('ok see ya!')
     process.exit();
 };
 
@@ -193,8 +193,9 @@ const addEmployee = () => {
         ])
             .then((answers) => {
                 console.log(answers);
-                if (answers) { //if answers are true
-                    db.query('INSERT INTO employees SET ?', answers, function (err, results) { if (err) throw err; console.log(`Added ${answers} to employees`);});
+                const { first_name, last_name, role_id } = answers;
+                // if (answers) { //if answers are true
+                //     db.query('INSERT INTO employees SET ?', answers, function (err, results) { if (err) throw err; console.log(`Added ${answers} to employees`);});
                 db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
                     console.log(results);
                     let managerList = [];
@@ -226,10 +227,14 @@ const addEmployee = () => {
                             };
                         });
                 });
-            };
-        });
+   
+            });
     });
 };
+
+//         });
+//     });
+// };
 
 
         //remove dept
