@@ -90,7 +90,7 @@ const viewAllRoles = () => {
 
 //view all employees
 const viewAllEmployees = () => {
-    db.query('SELECT * FROM employees JOIN roles ON employees.role_id = roles.id', (err, results) => {
+    db.query('SELECT * FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id', (err, results) => {
         if (err) throw err;
         console.table(results, ['first_name', 'last_name', 'title', 'salary', 'name', 'manager_id']);
         selector();
