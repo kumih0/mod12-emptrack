@@ -24,7 +24,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the emp_db database.`)
 );
 
-const mainSelection = [
+const mainMenu = [
     {
         type: 'list',
         name: 'options',
@@ -36,8 +36,9 @@ const mainSelection = [
             'Update Employee Role', 'Exit'],
     }
 ];
+
 const selector = () => {
-inquirer.prompt(mainSelection).then((answers) => { 
+inquirer.prompt(mainMenu).then((answers) => { 
     switch (answers.options) {
         case 'View All Employees':
             return viewAllEmployees();
@@ -69,7 +70,7 @@ const exit= () => {
     process.exit();
 };
 
-//get all departments first
+//view all departments first
 const viewAllDepartments = () => {
     db.query('SELECT name AS Department FROM departments', function (err, results) {
         if (err) throw err;
@@ -77,6 +78,8 @@ const viewAllDepartments = () => {
         selector();
     });
 };
+
+//
 
 //add department
 const addDepartment = () => {
