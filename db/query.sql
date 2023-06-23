@@ -11,3 +11,5 @@ JOIN roles ON employees.role_id = roles.id
 JOIN departments ON roles.department_id = departments.id;
 
 SELECT first_name, last_name FROM employees WHERE manager_id IS NULL;
+
+ SELECT title, first_name, last_name FROM employees JOIN roles ON employees.role_id = roles.id WHERE manager_id IS NULL;
