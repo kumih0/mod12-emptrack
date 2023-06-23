@@ -104,7 +104,7 @@ const addDepartment = () => {
         {
             type: 'input',
             name: 'name',
-            message: 'What is the name of the department you would like to add?',
+            message: 'What is the name of the department?',
         }
     ])
     .then((answers) => {
@@ -119,6 +119,72 @@ const addDepartment = () => {
     });
 };
 
+//add role
+const addRole = () => {
+   db.query('SELECT * FROM departments', function (err, results) {
+    let departments = [];
+    console.log(results);
+    if (err) throw err;
+    departments = results.map((department) => ({value: department.id, name: department.name}));
+    console.log(departments);
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the name of the role?',
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary of the role?',
+        },
+        {
+            type: 'list',
+            name: 'department_id',
+            message: 'What is the name of the department this role belongs to?',
+            choices: departments,
+        }
+    ]) 
+    .then((answers) => {
+        console.log(answers);
+        if (answers) {
+            db.query(`INSERT INTO roles SET ?`, answers, function (err, results) {
+                console.log(results);
+                if (err) throw err;
+                console.log(`Added ${answers} to roles`);
+                selector();
+            });
+        };
+    });
+};
+
+//add employee
+const addEmployee = () => {
+    let managerList = [];
+    db.query('SELECT ')
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'What is the first name of the employee?',
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'What is the last name of the employee?',
+        },
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the role of the employee?',
+        },
+        {
+            type: 'list',
+            name: 'manager_id',
+            message: 'Who is the manager of the employee?',
+            choices: managerList,
+        }
+    ])
 //remove dept
 const removeDepartment = () => {
     db.query('SELECT * FROM departments', function (err, results) {
