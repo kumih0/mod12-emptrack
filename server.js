@@ -162,7 +162,7 @@ const addRole = () => {
 
 //add employee
 const addEmployee = () => {
-    db.query('SELECT first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
+    db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
         console.log(results);
         let managerList = [];
         if (err) throw err;
