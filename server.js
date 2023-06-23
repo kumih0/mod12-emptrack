@@ -65,7 +65,7 @@ inquirer.prompt(mainMenu).then((answers) => {
     }
  });
 };
-const exit= () => { 
+const exit = () => { 
     console.log('Goodbye!') 
     process.exit();
 };
@@ -79,7 +79,24 @@ const viewAllDepartments = () => {
     });
 };
 
-//
+//view all roles
+const viewAllRoles = () => {
+    db.query('SELECT * FROM roles JOIN departments ON roles.department_id = departments.name', function (err, results) {
+        if (err) throw err;
+        console.table(results, ['title', 'salary', 'name']);
+        selector();
+    });
+};
+
+//view all employees
+const viewAllEmployees = () => {
+    db.query('SELECT * FROM employees JOIN roles ON employees.role_id = roles.title', (err, results) => {
+        if (err) throw err;
+        console.table(results, ['first_name', 'last_name', 'title', 'salary', 'name', 'manager_id']);
+        selector();
+    });
+};
+
 
 //add department
 const addDepartment = () => {
@@ -89,7 +106,8 @@ const addDepartment = () => {
             name: 'name',
             message: 'What is the name of the department you would like to add?',
         }
-    ]).then((answers) => {
+    ])
+    .then((answers) => {
         console.log(answers);
         if (answers) {
             db.query(`INSERT INTO departments SET ?`, answers, function (err, results) {
@@ -97,9 +115,9 @@ const addDepartment = () => {
                 console.log(`Added ${answers} to departments`);
                 selector();
             });
-        }
-});
-}
+        };
+    });
+};
 
 //remove dept
 const removeDepartment = () => {
