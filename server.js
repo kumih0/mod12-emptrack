@@ -156,12 +156,19 @@ const addRole = () => {
             });
         };
     });
+});
 };
+
 
 //add employee
 const addEmployee = () => {
+    db.query('SELECT * FROM employees WHERE manager_id = NULL', function (err, results) {
     let managerList = [];
-    db.query('SELECT ')
+    console.log(results);
+    if (err) throw err;
+    managerList = results.map((employee) => ({value: employee.id, name: employee.first_name + ' ' + employee.last_name}));
+    console.log(managerList);
+
     inquirer.prompt([
         {
             type: 'input',
@@ -185,6 +192,20 @@ const addEmployee = () => {
             choices: managerList,
         }
     ])
+    .then((answers) => {
+        console.log(answers);
+        if (answers) {
+            db.query(`INSERT INTO employees SET ?`, answers, function (err, results) {
+                console.log(results);
+                if (err) throw err;
+                console.log(`Added ${answers} to employees`);
+                selector();
+            });
+        };
+    });
+});
+};
+
 //remove dept
 const removeDepartment = () => {
     db.query('SELECT * FROM departments', function (err, results) {
