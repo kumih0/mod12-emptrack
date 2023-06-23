@@ -15,17 +15,17 @@ VALUES ('Manager', 100000.00, 1),
        ('Lawyer', 190000.00, 4);
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id) 
-VALUES ('John', 'Doe', 2, 2),
+VALUES ('John', 'Doe', 1, NULL),
        ('Ben', 'Dover', 1, NULL),
        ('Hugh', 'Jazz', 2, 2),
        ('Jenna', 'Taylia', 3, 2),
-       ('Mike', 'Hunt', 4, 10),
-       ('Jack', 'Mehoff', 5, 10),
-       ('Mike', 'Hawk', 7, 12),
-       ('Harry', 'Wiener', 8, 12),
+       ('Mike', 'Hunt', 4, 1),
+       ('Jack', 'Mehoff', 5, 1),
+       ('Mike', 'Hawk', 7, 2),
+       ('Harry', 'Wiener', 8, 2),
        ('Anita', 'Knapp', 3, 2),
-       ('Ty', 'Needich', 1, NULL),
-       ('Anna', 'Borshin', 6, 12),
+       ('Ty', 'Needich', 6, 1),
+       ('Anna', 'Borshin', 6, 1),
        ('Seymour', 'Butts', 1, NULL),
-       ('Omai', 'Lourd', 2, 10),
-       ('Dee', 'Rayjne', 3, 10);
+       ('Omai', 'Lourd', 2, 12),
+       ('Dee', 'Rayjne', 3, 12);
