@@ -162,18 +162,17 @@ const addRole = () => {
 
 //add employee
 const addEmployee = () => {
-    db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
+    db.query('SELECT id, title FROM roles', function (err, results) {
         console.log(results);
-        let managerList = [];
+        let roles = [];
         if (err) throw err;
-        managerList = results.map((employee) => (
+        roles = results.map((role) => (
             {
-                value: employee.id,
-                name: employee.first_name + ' ' + employee.last_name,
+                value: role.id,
+                name: role.title,
             })
         );
-        console.log(managerList);
-
+        console.log(roles);
         inquirer.prompt([
             {
                 type: 'input',
@@ -186,57 +185,75 @@ const addEmployee = () => {
                 message: 'What is the last name of the employee?',
             },
             {
-                type: 'input',
-                name: 'title',
-                message: 'What is the role of the employee?',
-            },
-            {
                 type: 'list',
-                name: 'manager_id',
-                message: 'Who is the manager of the employee?',
-                choices: managerList,
-            }
+                name: 'role_id',
+                message: 'What is the role of the employee?',
+                choices: roles,
+            },
         ])
             .then((answers) => {
                 console.log(answers);
-                if (answers) {
-                    db.query(`INSERT INTO employees SET ?`, answers, function (err, results) {
-                        console.log(results);
-                        if (err) throw err;
-                        console.log(`Added ${answers} to employees`);
-                        selector();
-                    });
-                };
-            });
-    });
-};
-
-//remove dept
-const removeDepartment = () => {
-    db.query('SELECT * FROM departments', function (err, results) {
-        let departments = [];
-        console.log(results);
-        if (err) throw err;
-        departments = results.map((department) => ({ value: department.id, name: department.name }));
-        console.log(departments);
-        inquirer.prompt([{
-            type: 'list',
-            name: 'id',
-            message: 'Which department would you like to remove?',
-            choices: departments
-        }])
-            .then((answers) => {
-                console.log(answers);
-                db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
+                db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
+                    console.log(results);
+                    let managerList = [];
                     if (err) throw err;
-                    console.log(`Removed ${answers} from departments`);
-                    selector();
+                    managerList = results.map((employee) => (
+                        {
+                            value: employee.id,
+                            name: employee.first_name + ' ' + employee.last_name,
+                        })
+                    );
+                    console.log(managerList);
+                    inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: 'manager_id',
+                            message: 'Who is the manager of the employee?',
+                            choices: managerList,
+                        }
+                    ])
+                        .then((answers) => {
+                            console.log(answers);
+                            if (answers) {
+                                db.query(`INSERT INTO employees SET ?`, answers, function (err, results) {
+                                    console.log(results);
+                                    if (err) throw err;
+                                    console.log(`Added ${answers} to employees`);
+                                    selector();
+                                });
+                            };
+                        });   
                 });
             });
     });
 };
 
-selector();
+        //remove dept
+        const removeDepartment = () => {
+            db.query('SELECT * FROM departments', function (err, results) {
+                let departments = [];
+                console.log(results);
+                if (err) throw err;
+                departments = results.map((department) => ({ value: department.id, name: department.name }));
+                console.log(departments);
+                inquirer.prompt([{
+                    type: 'list',
+                    name: 'id',
+                    message: 'Which department would you like to remove?',
+                    choices: departments
+                }])
+                    .then((answers) => {
+                        console.log(answers);
+                        db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
+                            if (err) throw err;
+                            console.log(`Removed ${answers} from departments`);
+                            selector();
+                        });
+                    });
+            });
+        };
+
+        selector();
 
 // app.listen(PORT, () => {
 //     console.log(`Server running on port ${PORT}`);
