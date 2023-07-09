@@ -1,10 +1,9 @@
-//for fucking about
-const getRoles = () => {
-    const roles = db.query('SELECT id, title FROM roles', function (err, results) {
-        if (err) throw err;
-        results.map((role) => ({ value: role.id, name: role.title }));
-    })
-    return [
+
+const addEmployee = async () => {
+    const roles = await db.query('SELECT id, title FROM roles');
+    const managerList = await db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL');
+
+    const newEmployee = await inquirer.prompt([
         {
             type: 'input',
             name: 'first_name',
@@ -19,36 +18,20 @@ const getRoles = () => {
             type: 'list',
             name: 'role_id',
             message: 'What is the role of the employee?',
-            choices: roles,
+            choices: roles.map((role) => ({ value: role.id, name: role.title })),
         },
-    ]
-};
-
-
-const getManagers = () => {
-    const managerList = db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
-        if (err) throw err;
-        results.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
-    })
-    return [
         {
             type: 'list',
-            name: 'manager_name',
+            name: 'manager_id',
             message: 'Who is the manager of the employee?',
-            choices: managerList,
+            choices: managerList.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name })),
         }
-    ]
-}
-
-const addEmployee = async () => {
-    const { first_name, last_name, role_id } = await inquirer.prompt(getRoles());
-    const { manager_id } = await inquirer.prompt(getManagers());
-
-    if (first_name && last_name && role_id && manager_id) {
-        db.query(`INSERT INTO employees SET ?`, { first_name, last_name, role_id, manager_id }, function (err, results) {
+    ]);
+    if (newEmployee) {
+        db.query(`INSERT INTO employees SET ?`, newEmployee, function (err, results) {
             console.log(results);
             if (err) throw err;
-            console.log(`Added ${first_name} ${last_name} to employees`);
+            console.log(`Added ${newEmployee} to employees`);
             selector();
         });
     } else {
