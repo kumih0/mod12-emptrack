@@ -251,5 +251,30 @@ const removeRole = async () => {
     selector();
 }
 
+//remove employee
+const removeEmployee = async () => {
+    const employees = await db.query('SELECT * FROM employees');
+    console.log(employees);
+    const selectedEmployee = await inquirer.prompt([{
+        type: 'list',
+        name: 'id',
+        message: 'Which employee would you like to remove?',
+        choices: employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }))
+    }])
+    const confirmRemove = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'confirm',
+        message: `Are you sure you want to remove ${selectedEmployee.id}?`
+    }])
+    if (confirmRemove.confirm) {
+        await db.query('DELETE FROM employees WHERE id = ?', selectedEmployee.id);
+        console.log(`Removed ${selectedEmployee.id} from employees`);
+    } else {
+        console.log('Cancelled');
+    }
+    selector();
+}
+
+
 selector();
 
