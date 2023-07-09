@@ -263,7 +263,28 @@ const removeDepartment = () => {
 };
 
 //remove role
-const 
+const removeRole = async () => {
+    const roles = await db.query('SELECT * FROM roles');
+    console.log(roles);
+    const selectedRole = await inquirer.prompt([{
+        type: 'list',
+        name: 'id',
+        message: 'Which role would you like to remove?',
+        choices: roles.map((role) => ({ value: role.id, name: role.title }))
+    }])
+    const confirmRemove = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'confirm',
+        message: `Are you sure you want to remove ${selectedRole.id}?`
+    }])
+    if (confirmRemove.confirm) {
+        await db.query('DELETE FROM roles WHERE id = ?', selectedRole.id);
+        console.log(`Removed ${selectedRole.id} from roles`);
+    } else {
+        console.log('Cancelled');
+    }
+    selector();
+}
 
 selector();
 
