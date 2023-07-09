@@ -1,94 +1,58 @@
 //for fucking about
 const getRoles = () => {
-    let roles = [];
-    db.query('SELECT id, title FROM roles', function (err, results) {
+    const roles = db.query('SELECT id, title FROM roles', function (err, results) {
         if (err) throw err;
-        roles = results.map((role) => ({value: role.id, name: role.title}));
-        return roles;
-        })
+        results.map((role) => ({ value: role.id, name: role.title }));
+    })
+    return [
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'What is the first name of the employee?',
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'What is the last name of the employee?',
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'What is the role of the employee?',
+            choices: roles,
+        },
+    ]
 };
 
+
 const getManagers = () => {
-    db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
-        console.log(results);
-        let managerList = [];
+    const managerList = db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
         if (err) throw err;
-        managerList = results.map((employee) => ({value: employee.id, name: employee.first_name + ' ' + employee.last_name}));
-        return managerList;
+        results.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
     })
+    return [
+        {
+            type: 'list',
+            name: 'manager_name',
+            message: 'Who is the manager of the employee?',
+            choices: managerList,
+        }
+    ]
 }
 
-const employeeQs = [
-    {
-        type: 'input',
-        name: 'first_name',
-        message: 'What is the first name of the employee?',
-    },
-    {
-        type: 'input',
-        name: 'last_name',
-        message: 'What is the last name of the employee?',
-    },
-    {
-        type: 'list',
-        name: 'role_id',
-        message: 'What is the role of the employee?',
-        choices: roles,
-    },
-];
+const addEmployee = async () => {
+    const { first_name, last_name, role_id } = await inquirer.prompt(getRoles());
+    const { manager_id } = await inquirer.prompt(getManagers());
 
-const empManagerQ = [
-    {
-        type: 'list',
-        name: 'manager_id',
-        message: 'Who is the manager of the employee?',
-        choices: managerList,
+    if (first_name && last_name && role_id && manager_id) {
+        db.query(`INSERT INTO employees SET ?`, { first_name, last_name, role_id, manager_id }, function (err, results) {
+            console.log(results);
+            if (err) throw err;
+            console.log(`Added ${first_name} ${last_name} to employees`);
+            selector();
+        });
+    } else {
+        console.log('Please enter all information');
+        selector();
     }
-];
-
-const addEmployee = () => {
-    // db.query('SELECT id, title FROM roles', function (err, results) {
-    //     console.log(results);
-    //     let roles = [];
-    //     if (err) throw err;
-    //     roles = results.map((role) => (
-    //         {
-    //             value: role.id,
-    //             name: role.title,
-    //         })
-    //     );
-    //     console.log(roles);
-        inquirer.prompt(employeeQs)
-            .then((answers) => {
-                console.log(answers);
-                const { first_name, last_name, role_id } = answers;
-                // if (answers) { //if answers are true
-                //     db.query('INSERT INTO employees SET ?', answers, function (err, results) { if (err) throw err; console.log(`Added ${answers} to employees`);});
-                db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', function (err, results) {
-                    console.log(results);
-                    // let managerList = [];
-                    // if (err) throw err;
-                    // managerList = results.map((employee) => (
-                    //     {
-                    //         value: employee.id,
-                    //         name: employee.first_name + ' ' + employee.last_name,
-                    //     })
-                    // );
-                    console.log(managerList);
-                    inquirer.prompt(empManagerQ)
-                        .then((answers) => {
-                            console.log(answers);
-                            if (answers) {
-                                db.query(`INSERT INTO employees SET ?`, answers, function (err, results) {
-                                    console.log(results);
-                                    if (err) throw err;
-                                    console.log(`Added ${answers} to employees`);
-                                    selector();
-                                });
-                            };
-                        });
-                });
-   
-            });
-    });
 };

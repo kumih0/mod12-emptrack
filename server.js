@@ -227,7 +227,7 @@ const addEmployee = () => {
                             };
                         });
                 });
-   
+
             });
     });
 };
@@ -237,33 +237,33 @@ const addEmployee = () => {
 // };
 
 
-        //remove dept
-        const removeDepartment = () => {
-            db.query('SELECT * FROM departments', function (err, results) {
-                let departments = [];
-                console.log(results);
-                if (err) throw err;
-                departments = results.map((department) => ({ value: department.id, name: department.name }));
-                console.log(departments);
-                inquirer.prompt([{
-                    type: 'list',
-                    name: 'id',
-                    message: 'Which department would you like to remove?',
-                    choices: departments
-                }])
-                    .then((answers) => {
-                        console.log(answers);
-                        db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
-                            if (err) throw err;
-                            console.log(`Removed ${answers} from departments`);
-                            selector();
-                        });
-                    });
+//remove dept
+const removeDepartment = () => {
+    db.query('SELECT * FROM departments', function (err, results) {
+        let departments = [];
+        console.log(results);
+        if (err) throw err;
+        departments = results.map((department) => ({ value: department.id, name: department.name }));
+        console.log(departments);
+        inquirer.prompt([{
+            type: 'list',
+            name: 'id',
+            message: 'Which department would you like to remove?',
+            choices: departments
+        }])
+            .then((answers) => {
+                console.log(answers);
+                db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
+                    if (err) throw err;
+                    console.log(`Removed ${answers} from departments`);
+                    selector();
+                });
             });
-        };
+    });
+};
 
-        selector();
+//remove role
+const 
 
-// app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-// });
+selector();
+
