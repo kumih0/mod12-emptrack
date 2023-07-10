@@ -231,8 +231,6 @@ const removeDepartment = () => {
             .then((answers) => {
                 //i want the console to print out the name of the department that was removed but when using ${department[answers.id-1].name} it returns undefined
                 //i think it's because despite saving the answers.id-1 as a variable 
-                const selected = departments.filter((department) => department.id === answers.id);
-                console.log(selected);
                 db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
                     if (err) throw err;
                     console.log(`Removed department ${selected[0].name} successfully`);
@@ -319,11 +317,11 @@ const updateEmployee = async () => {
         type: 'list',
         name: 'id',
         message: 'What would you like to update?',
-        choices: ['Role', 'Manager', 'Both']
+        choices: ['Role', 'Manager']
     }])
 
 
-    if (whatUpdate.id === 'Role' || whatUpdate.id === 'Both') {
+    if (whatUpdate.id === 'Role') {
         const updateRole = await inquirer.prompt([{
             type: 'list',
             name: 'id',
@@ -350,7 +348,7 @@ const updateEmployee = async () => {
                 console.log('Cancelled');
             }
         }
-    } else if (whatUpdate.id === 'Manager' || whatUpdate.id === 'Both') {
+    } else if (whatUpdate.id === 'Manager' ) {
         const updateManager = await inquirer.prompt([{
             type: 'list',
             name: 'id',
