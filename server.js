@@ -229,9 +229,13 @@ const removeDepartment = () => {
             choices: departments
         }])
             .then((answers) => {
+                //i want the console to print out the name of the department that was removed but when using ${department[answers.id-1].name} it returns undefined
+                //i think it's because despite saving the answers.id-1 as a variable 
+                const selected = departments.filter((department) => department.id === answers.id);
+                console.log(selected);
                 db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
                     if (err) throw err;
-                    console.log(`Removed department ${answers.id} successfully`);
+                    console.log(`Removed department ${selected[0].name} successfully`);
                     selector();
                 });
             });
@@ -292,16 +296,25 @@ const removeEmployee = async () => {
 
 //update employee
 const updateEmployee = async () => {
-    const employees = db.query('SELECT * FROM employees');
-    const roles =  db.query('SELECT * FROM roles');
-    const managers = db.query('SELECT * FROM employees WHERE manager_id IS NULL');
+    //althought this is a bit redundant, it's the only way I could get the prompt to work
+    //i think that since the answer data isn't known, it's having trouble traversing the array of objects
+    const employees = await getEmployees();
+    const employeesList = employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
+    const roles =  await getRoles();
+    const rolesList = roles.map((role) => ({ value: role.id, name: role.title }));
+    const managers = await getManagers();
+    const managerList = managers.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
 
     const selectedEmployee = await inquirer.prompt([{
         type: 'list',
         name: 'id',
         message: 'Which employee would you like to update?',
-        choices: employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }))
+        choices: employeesList
     }])
+
+    const who = employees.filter((employee) => employee.id === selectedEmployee.id);
+    console.log(who);
+
     const whatUpdate = await inquirer.prompt([{
         type: 'list',
         name: 'id',
@@ -309,26 +322,30 @@ const updateEmployee = async () => {
         choices: ['Role', 'Manager', 'Both']
     }])
 
+
     if (whatUpdate.id === 'Role' || whatUpdate.id === 'Both') {
         const updateRole = await inquirer.prompt([{
             type: 'list',
             name: 'id',
             message: 'Which role would you like to update?',
-            choices: roles.map((role) => ({ value: role.id, name: role.title }))
+            choices: rolesList
         }])
-        if (updateRole.id === selectedEmployee.role_id) {
+
+        const wtfRole = roles.filter((role) => role.id === updateRole.id);
+        
+        if (updateRole.id === who[0].role_id) {
             console.log('Employee already has this role');
             selector();
         } else {
             const confirmUpdateRole = await inquirer.prompt([{
                 type: 'confirm',
                 name: 'confirm',
-                message: `Are you sure you want to update ${selectedEmployee.id}'s role to ${updateRole.id}?`
+                message: `Are you sure you want to update ${who[0].first_name} ${who[0].last_name}'s role to ${wtfRole[0].title}?`
             }])
 
-            if (confirmUpdateRole.confirm) {
+            if (confirmUpdateRole.confirm) { //pls no boolie this is so redundant and i hate it
                 db.query('UPDATE employees SET role_id = ? WHERE id = ?', [updateRole.id, selectedEmployee.id]);
-                console.log(`Updated ${selectedEmployee.id}'s role to ${updateRole.id}`);
+                console.log(`Updated ${who[0].first_name} ${who[0].last_name}'s role to ${wtfRole[0].title}`);
             } else {
                 console.log('Cancelled');
             }
@@ -338,16 +355,20 @@ const updateEmployee = async () => {
             type: 'list',
             name: 'id',
             message: 'Which manager would you like to update?',
-            choices: managers.map((manager) => ({ value: manager.id, name: manager.first_name + ' ' + manager.last_name }))
+            choices: managerList
         }])
+
+        const wutManager = managers.filter((employee) => employee.id === updateManager.id);
+
         const confirmUpdateManager = await inquirer.prompt([{
             type: 'confirm',
             name: 'confirm',
-            message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updateManager.id}?`
+            message: `Are you sure you want to update ${who[0].first_name} ${who[0].last_name}'s manager to ${wutManager[0].first_name} ${wutManager[0].last_name}?`
         }])
+
         if (confirmUpdateManager.confirm) {
             db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updateManager.id, selectedEmployee.id]);
-            console.log(`Updated ${selectedEmployee.id}'s manager to ${updateManager.id}`);
+            console.log(`Updated ${who[0].first_name} ${who[0].last_name}'s manager to ${wutManager[0].first_name} ${wutManager[0].last_name}`);
         } else {
             console.log('Cancelled');
         }
