@@ -117,10 +117,8 @@ const addDepartment = () => {
 const addRole = () => {
     db.query('SELECT * FROM departments', function (err, results) {
         let departments = [];
-        console.log(results);
         if (err) throw err;
         departments = results.map((department) => ({ value: department.id, name: department.name }));
-        console.log(departments);
         inquirer.prompt([
             {
                 type: 'input',
@@ -140,25 +138,41 @@ const addRole = () => {
             }
         ])
             .then((answers) => {
-                console.log(answers);
                 if (answers) {
                     db.query(`INSERT INTO roles SET ?`, answers, function (err, results) {
-                        console.log(results);
                         if (err) throw err;
-                        console.log(`Added ${answers} to roles`);
+                        console.log(`Added ${answers.title} to roles`);
                         selector();
                     });
                 };
             });
     });
 };
-
+//helper functions since they are reused in multiple functions
+const getRoles = () => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT id, title FROM roles', (err, results) => {
+            if (err) reject(err);
+            resolve(results);
+        });
+    });
+};
+const getManagers = () => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL', (err, results) => {
+            if (err) reject(err);
+            resolve(results);
+        });
+    });
+};
 
 //add employee
 const addEmployee = async () => {
-    const roles = await db.query('SELECT id, title FROM roles');
-    const managerList = await db.query('SELECT id, first_name, last_name FROM employees WHERE manager_id IS NULL');
-
+    
+    const roles = await getRoles();
+    const managers = await getManagers();
+    const rolesList = roles.map((role) => ({ value: role.id, name: role.title }));
+    const managerList = managers.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
     const newEmployee = await inquirer.prompt([
         {
             type: 'input',
@@ -174,20 +188,20 @@ const addEmployee = async () => {
             type: 'list',
             name: 'role_id',
             message: 'What is the role of the employee?',
-            choices: roles.map((role) => ({ value: role.id, name: role.title })),
+            choices: rolesList,
         },
         {
             type: 'list',
             name: 'manager_id',
             message: 'Who is the manager of the employee?',
-            choices: managerList.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name })),
+            choices: managerList,
         }
     ]);
     if (newEmployee) {
         db.query(`INSERT INTO employees SET ?`, newEmployee, function (err, results) {
             console.log(results);
             if (err) throw err;
-            console.log(`Added ${newEmployee} to employees`);
+            console.log(`Added ${newEmployee.first_name} ${newEmployee.last_name} to employees`);
             selector();
         });
     } else {
@@ -200,10 +214,8 @@ const addEmployee = async () => {
 const removeDepartment = () => {
     db.query('SELECT * FROM departments', function (err, results) {
         let departments = [];
-        console.log(results);
         if (err) throw err;
         departments = results.map((department) => ({ value: department.id, name: department.name }));
-        console.log(departments);
         inquirer.prompt([{
             type: 'list',
             name: 'id',
@@ -211,10 +223,9 @@ const removeDepartment = () => {
             choices: departments
         }])
             .then((answers) => {
-                console.log(answers);
                 db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
                     if (err) throw err;
-                    console.log(`Removed ${answers} from departments`);
+                    console.log(`Removed ${answers.id} from departments`);
                     selector();
                 });
             });
@@ -223,13 +234,12 @@ const removeDepartment = () => {
 
 //remove role
 const removeRole = async () => {
-    const roles = await db.query('SELECT * FROM roles');
-    console.log(roles);
+    const rolesList = await getRoles().map((role) => ({ value: role.id, name: role.title }));
     const selectedRole = await inquirer.prompt([{
         type: 'list',
         name: 'id',
         message: 'Which role would you like to remove?',
-        choices: roles.map((role) => ({ value: role.id, name: role.title }))
+        choices: rolesList
     }])
     const confirmRemove = await inquirer.prompt([{
         type: 'confirm',
@@ -237,7 +247,7 @@ const removeRole = async () => {
         message: `Are you sure you want to remove ${selectedRole.id}?`
     }])
     if (confirmRemove.confirm) {
-        await db.query('DELETE FROM roles WHERE id = ?', selectedRole.id);
+        db.query('DELETE FROM roles WHERE id = ?', selectedRole.id);
         console.log(`Removed ${selectedRole.id} from roles`);
     } else {
         console.log('Cancelled');
@@ -247,7 +257,7 @@ const removeRole = async () => {
 
 //remove employee
 const removeEmployee = async () => {
-    const employees = await db.query('SELECT * FROM employees');
+    const employees = db.query('SELECT * FROM employees');
     console.log(employees);
     const selectedEmployee = await inquirer.prompt([{
         type: 'list',
@@ -261,7 +271,7 @@ const removeEmployee = async () => {
         message: `Are you sure you want to remove ${selectedEmployee.id}?`
     }])
     if (confirmRemove.confirm) {
-        await db.query('DELETE FROM employees WHERE id = ?', selectedEmployee.id);
+        db.query('DELETE FROM employees WHERE id = ?', selectedEmployee.id);
         console.log(`Removed ${selectedEmployee.id} from employees`);
     } else {
         console.log('Cancelled');
@@ -271,9 +281,9 @@ const removeEmployee = async () => {
 
 //update employee
 const updateEmployee = async () => {
-    const employees = await db.query('SELECT * FROM employees');
-    const roles = await db.query('SELECT * FROM roles');
-    const managers = await db.query('SELECT * FROM employees WHERE manager_id IS NULL');
+    const employees = db.query('SELECT * FROM employees');
+    const roles =  db.query('SELECT * FROM roles');
+    const managers = db.query('SELECT * FROM employees WHERE manager_id IS NULL');
 
     const selectedEmployee = await inquirer.prompt([{
         type: 'list',
@@ -325,7 +335,7 @@ const updateEmployee = async () => {
             message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updateManager.id}?`
         }])
         if (confirmUpdateManager.confirm) {
-            await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updateManager.id, selectedEmployee.id]);
+            db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updateManager.id, selectedEmployee.id]);
             console.log(`Updated ${selectedEmployee.id}'s manager to ${updateManager.id}`);
         } else {
             console.log('Cancelled');
