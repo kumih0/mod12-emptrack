@@ -229,13 +229,15 @@ const removeDepartment = () => {
             choices: departments
         }])
             .then((answers) => {
-                const dept = departments.find((department) => department.id === answers.id);
-                console.log(dept);
-                db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
-                    if (err) throw err;
-                    console.log(`Removed ${dept} from departments`);
+                console.log(answers.id - 1);
+                
+                console.log(departments[answers.id - 1]);//comes back as undefined
+                
+                // db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
+                //     if (err) throw err;
+                //     console.log(`Removed ${dept} from departments`);
                     selector();
-                });
+                // });
             });
     });
 };
