@@ -242,7 +242,6 @@ const removeDepartment = () => {
 const removeRole = async () => {
     const roles = await getRoles();
     const rolesList = roles.map((role) => ({ value: role.id, name: role.title }));
-    console.log(roles, rolesList);
     const selectedRole = await inquirer.prompt([{
         type: 'list',
         name: 'id',
@@ -250,7 +249,6 @@ const removeRole = async () => {
         choices: rolesList
     }])
     const selected = roles.filter((role) => role.id === selectedRole.id);
-    console.log(selected, selected[0].title);
     const confirmRemove = await inquirer.prompt([{
         type: 'confirm',
         name: 'confirm',
