@@ -275,10 +275,11 @@ const removeEmployee = async () => {
     selector();
 }
 
-//update employee role
-const updateEmployeeRole = async () => {
+//update employee
+const updateEmployee = async () => {
     const employees = await db.query('SELECT * FROM employees');
     const roles = await db.query('SELECT * FROM roles');
+    const departments = await db.query('SELECT * FROM departments');
     const managers = await db.query('SELECT * FROM employees WHERE manager_id IS NULL');
 
     const selectedEmployee = await inquirer.prompt([{
@@ -294,46 +295,50 @@ const updateEmployeeRole = async () => {
         choices: ['Role', 'Manager', 'Both']
     }])
 
-    if (whatUpdate.id === 'Rolee' || whatUpdate.id === 'Both') {
+    if (whatUpdate.id === 'Role' || whatUpdate.id === 'Both') {
         const updateRole = await inquirer.prompt([{
             type: 'list',
             name: 'id',
             message: 'Which role would you like to update?',
             choices: roles.map((role) => ({ value: role.id, name: role.title }))
         }])
-        const confirmUpdateRole = await inquirer.prompt([{
-            type: 'confirm',
-            name: 'confirm',
-            message: `Are you sure you want to update ${selectedEmployee.id}'s role to ${updateRole.id}?`
-        }])
-        if (confirmUpdateRole.confirm) {
-            await db.query('UPDATE employees SET role_id = ? WHERE id = ?', [selectedRole.id, selectedEmployee.id]);
-            console.log(`Updated ${selectedEmployee.id}'s role to ${selectedRole.id}`);
+        if (updateRole.id === selectedEmployee.role_id) {
+            console.log('Employee already has this role');
+            selector();
         } else {
-            console.log('Cancelled');
-        }
+            const confirmUpdateRole = await inquirer.prompt([{
+                type: 'confirm',
+                name: 'confirm',
+                message: `Are you sure you want to update ${selectedEmployee.id}'s role to ${updateRole.id}?`
+            }])
+
+            if (confirmUpdateRole.confirm) {
+                await db.query('UPDATE employees SET role_id = ? WHERE id = ?', [updateRole.id, selectedEmployee.id]);
+                console.log(`Updated ${selectedEmployee.id}'s role to ${updateRole.id}`);
+            } else {
+                console.log('Cancelled');
+            }
+        } 
     } else if (whatUpdate.id === 'Manager' || whatUpdate.id === 'Both') {
-        const updatedManager = await inquirer.prompt([{
-            type: 'list',
-            name: 'id',
-            message: 'Which manager would you like to update?',
-            choices: managers.map((manager) => ({ value: manager.id, name: manager.first_name + ' ' + manager.last_name }))
-        }])
-        const confirmUpdateManager = await inquirer.prompt([{
-            type: 'confirm',
-            name: 'confirm',
-            message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updatedManager.id}?`
-        }])
-        if (confirmUpdateManager.confirm) {
-            await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updatedManager.id, selectedEmployee.id]);
-            console.log(`Updated ${selectedEmployee.id}'s manager to ${updatedManager.id}`);
-        } else {
-            console.log('Cancelled');
+            const updateManager = await inquirer.prompt([{
+                type: 'list',
+                name: 'id',
+                message: 'Which manager would you like to update?',
+                choices: managers.map((manager) => ({ value: manager.id, name: manager.first_name + ' ' + manager.last_name }))
+            }])
+            const confirmUpdateManager = await inquirer.prompt([{
+                type: 'confirm',
+                name: 'confirm',
+                message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updatedManager.id}?`
+            }])
+            if (confirmUpdateManager.confirm) {
+                await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updatedManager.id, selectedEmployee.id]);
+                console.log(`Updated ${selectedEmployee.id}'s manager to ${updatedManager.id}`);
+            } else {
+                console.log('Cancelled');
+            }
         }
+        selector();
     }
+
     selector();
-}
-
-
-
-selector();
