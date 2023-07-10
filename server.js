@@ -267,21 +267,23 @@ const removeRole = async () => {
 const removeEmployee = async () => {
     const employees = await getEmployees();
     const employeesList = employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
-    console.log(employeesList);
+ 
     const selectedEmployee = await inquirer.prompt([{
         type: 'list',
         name: 'id',
         message: 'Which employee would you like to remove?',
         choices: employeesList
     }])
+    const selected = employees.filter((employee) => employee.id === selectedEmployee.id);
+
     const confirmRemove = await inquirer.prompt([{
         type: 'confirm',
         name: 'confirm',
-        message: `Are you sure you want to remove ${employeesList[selectedEmployee.id].name}?`
+        message: `Are you sure you want to remove ${selected[0].first_name} ${selected[0].last_name}?`
     }])
     if (confirmRemove.confirm) {
         db.query('DELETE FROM employees WHERE id = ?', selectedEmployee.id);
-        console.log(`Removed ${employeesList[selectedEmployee.id].name} from employees`);
+        console.log(`Removed ${selected[0].first_name} ${selected[0].last_name} from employees`);
     } else {
         console.log('Cancelled');
     }
