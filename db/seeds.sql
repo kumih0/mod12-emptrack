@@ -1,18 +1,18 @@
 INSERT INTO departments (name) 
-VALUES ('Sales'),
-       ('Engineering'),
-       ('Finance'),
-       ('Legal');
+VALUES (' idiot dept'),
+       ('goofballs'),
+       ('general tomfoolery'),
+       ('dumb idea disposal');
 
 INSERT INTO roles (title, salary, department_id) 
 VALUES ('Manager', 100000.00, 1),
-       ('Sales Lead', 75000.00, 1),
-       ('Salesperson', 50000.00, 1),
-       ('Software Engineer', 100000.00, 2),
-       ('Lead Engineer', 150000.00, 2),
-       ('Accountant', 75000.00, 3),
-       ('Legal Team Lead', 250000.00, 4),
-       ('Lawyer', 190000.00, 4);
+       ('head idiot', 75000.00, 1),
+       ('minor idiot', 50000.00, 1),
+       ('amusing doofus', 100000.00, 2),
+       ('research dingus', 150000.00, 2),
+       ('lead dangus', 75000.00, 3),
+       ('resident moron wrangler', 250000.00, 4),
+       ('idea master', 190000.00, 4);
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id) 
 VALUES ('John', 'Doe', 1, NULL),
