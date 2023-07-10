@@ -1,17 +1,9 @@
-// const express = require('express');
 //importing mysql2
 const mysql = require('mysql2');
-
 const inquirer = require('inquirer');
-
 
 //server port
 const PORT = process.env.PORT || 3000;
-// const app = express();
-
-//express middleware
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
 
 //connect to database
 const db = mysql.createConnection(
@@ -33,7 +25,7 @@ const mainMenu = [
             'View All Employees', 'View All Departments', 'View All Roles',
             'Add Employee', 'Add Department', 'Add Role',
             'Remove Employee', 'Remove Department', 'Remove Role',
-            'Update Employee Role', 'Exit'],
+            'Update Employee', 'Exit'],
     }
 ];
 
@@ -59,7 +51,7 @@ const selector = () => {
             case 'Remove Role':
                 return removeRole();
             case 'Update Employee Role':
-                return updateEmployeeRole();
+                return updateEmployee();
             default:
                 return exit();
         }
