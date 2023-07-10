@@ -279,7 +279,6 @@ const removeEmployee = async () => {
 const updateEmployee = async () => {
     const employees = await db.query('SELECT * FROM employees');
     const roles = await db.query('SELECT * FROM roles');
-    const departments = await db.query('SELECT * FROM departments');
     const managers = await db.query('SELECT * FROM employees WHERE manager_id IS NULL');
 
     const selectedEmployee = await inquirer.prompt([{
@@ -329,11 +328,11 @@ const updateEmployee = async () => {
             const confirmUpdateManager = await inquirer.prompt([{
                 type: 'confirm',
                 name: 'confirm',
-                message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updatedManager.id}?`
+                message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updateManager.id}?`
             }])
             if (confirmUpdateManager.confirm) {
-                await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updatedManager.id, selectedEmployee.id]);
-                console.log(`Updated ${selectedEmployee.id}'s manager to ${updatedManager.id}`);
+                await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updateManager.id, selectedEmployee.id]);
+                console.log(`Updated ${selectedEmployee.id}'s manager to ${updateManager.id}`);
             } else {
                 console.log('Cancelled');
             }
