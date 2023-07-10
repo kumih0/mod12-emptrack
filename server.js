@@ -275,6 +275,49 @@ const removeEmployee = async () => {
     selector();
 }
 
+//update employee role
+const updateEmployeeRole = async () => {
+    const employees = await db.query('SELECT * FROM employees');
+    const roles = await db.query('SELECT * FROM roles');
+    const managers = await db.query('SELECT * FROM employees WHERE manager_id IS NULL');
+    
+    const selectedEmployee = await inquirer.prompt([{
+        type: 'list',
+        name: 'id',
+        message: 'Which employee would you like to update?',
+        choices: employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }))
+    }])
+    const selectedRole = await inquirer.prompt([{
+        type: 'list',
+        name: 'id',
+        message: 'Which role would you like to update?',
+        choices: roles.map((role) => ({ value: role.id, name: role.title }))
+    }])
+    const whatUpdate = await inquirer.prompt([{
+        type: 'list',
+        name: 'id',
+        message: 'What would you like to update?',
+        choices: ['Role', 'Manager', 'Both']
+    }])
+    const updatedRole = await whatUpdate.id === 'Role' || whatUpdate.id === 'Both' ? await db.query('UPDATE employees SET role_id = ? WHERE id = ?', [selectedRole.id, selectedEmployee.id]) : null;
+    const updatedManager = await inquirer.prompt([{
+        type: 'list',
+        name: 'id',
+        message: 'Which manager would you like to update?',
+        choices: managers.map((manager) => ({ value: manager.id, name: manager.first_name + ' ' + manager.last_name }))
+    }])
+
+    const confirmUpdateRole = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'confirm',
+        message: `Are you sure you want to update ${selectedEmployee.id}'s role to ${selectedRole.id}?`
+    }])
+
+    const confirmUpdateManager = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'confirm',
+        message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updatedManager.id}?`
+        
+
 
 selector();
-
