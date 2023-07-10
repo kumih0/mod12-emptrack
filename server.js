@@ -22,9 +22,9 @@ const mainMenu = [
         name: 'options',
         message: 'What would you like to do?',
         choices: [
-            'View All Employees', 'View All Departments', 'View All Roles',
-            'Add Employee', 'Add Department', 'Add Role',
-            'Remove Employee', 'Remove Department', 'Remove Role',
+            'View All Departments', 'View All Roles', 'View All Employees',
+            'Add Department', 'Add Role', 'Add Employee',
+            'Remove Department', 'Remove Role', 'Remove Employee',
             'Update Employee', 'Exit'],
     }
 ];
@@ -32,25 +32,27 @@ const mainMenu = [
 const selector = () => {
     inquirer.prompt(mainMenu).then((answers) => {
         switch (answers.options) {
-            case 'View All Employees':
-                return viewAllEmployees();
             case 'View All Departments':
                 return viewAllDepartments();
             case 'View All Roles':
                 return viewAllRoles();
-            case 'Add Employee':
-                return addEmployee();
+            case 'View All Employees':
+                return viewAllEmployees();
             case 'Add Department':
                 return addDepartment();
             case 'Add Role':
                 return addRole();
             case 'Remove Employee':
                 return removeEmployee();
+            case 'Add Employee':
+                return addEmployee();
             case 'Remove Department':
                 return removeDepartment();
             case 'Remove Role':
                 return removeRole();
-            case 'Update Employee Role':
+            case 'Remove Employee':
+                return removeEmployee();
+            case 'Update Employee':
                 return updateEmployee();
             default:
                 return exit();
@@ -309,27 +311,27 @@ const updateEmployee = async () => {
             } else {
                 console.log('Cancelled');
             }
-        } 
-    } else if (whatUpdate.id === 'Manager' || whatUpdate.id === 'Both') {
-            const updateManager = await inquirer.prompt([{
-                type: 'list',
-                name: 'id',
-                message: 'Which manager would you like to update?',
-                choices: managers.map((manager) => ({ value: manager.id, name: manager.first_name + ' ' + manager.last_name }))
-            }])
-            const confirmUpdateManager = await inquirer.prompt([{
-                type: 'confirm',
-                name: 'confirm',
-                message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updateManager.id}?`
-            }])
-            if (confirmUpdateManager.confirm) {
-                await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updateManager.id, selectedEmployee.id]);
-                console.log(`Updated ${selectedEmployee.id}'s manager to ${updateManager.id}`);
-            } else {
-                console.log('Cancelled');
-            }
         }
-        selector();
+    } else if (whatUpdate.id === 'Manager' || whatUpdate.id === 'Both') {
+        const updateManager = await inquirer.prompt([{
+            type: 'list',
+            name: 'id',
+            message: 'Which manager would you like to update?',
+            choices: managers.map((manager) => ({ value: manager.id, name: manager.first_name + ' ' + manager.last_name }))
+        }])
+        const confirmUpdateManager = await inquirer.prompt([{
+            type: 'confirm',
+            name: 'confirm',
+            message: `Are you sure you want to update ${selectedEmployee.id}'s manager to ${updateManager.id}?`
+        }])
+        if (confirmUpdateManager.confirm) {
+            await db.query('UPDATE employees SET manager_id = ? WHERE id = ?', [updateManager.id, selectedEmployee.id]);
+            console.log(`Updated ${selectedEmployee.id}'s manager to ${updateManager.id}`);
+        } else {
+            console.log('Cancelled');
+        }
     }
-
     selector();
+}
+
+selector();
