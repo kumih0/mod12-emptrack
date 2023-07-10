@@ -102,11 +102,10 @@ const addDepartment = () => {
         }
     ])
         .then((answers) => {
-            console.log(answers);
             if (answers) {
                 db.query(`INSERT INTO departments SET ?`, answers, function (err, results) {
                     if (err) throw err;
-                    console.log(`Added ${answers} to departments`);
+                    console.log(`Added ${answers.name} to departments`);
                     selector();
                 });
             };
@@ -165,6 +164,14 @@ const getManagers = () => {
         });
     });
 };
+const getEmployees = () => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT id, first_name, last_name FROM employees', (err, results) => {
+            if (err) reject(err);
+            resolve(results);
+        });
+    });
+};
 
 //add employee
 const addEmployee = async () => {
@@ -197,16 +204,15 @@ const addEmployee = async () => {
             choices: managerList,
         }
     ]);
-    if (newEmployee) {
+    if (newEmployee.first_name === '' || newEmployee.last_name === '') {
+        console.log('Please enter all information');
+        selector();
+    } else {
         db.query(`INSERT INTO employees SET ?`, newEmployee, function (err, results) {
-            console.log(results);
             if (err) throw err;
             console.log(`Added ${newEmployee.first_name} ${newEmployee.last_name} to employees`);
             selector();
         });
-    } else {
-        console.log('Please enter all information');
-        selector();
     }
 };
 
@@ -223,9 +229,11 @@ const removeDepartment = () => {
             choices: departments
         }])
             .then((answers) => {
+                const dept = departments.find((department) => department.id === answers.id);
+                console.log(dept);
                 db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
                     if (err) throw err;
-                    console.log(`Removed ${answers.id} from departments`);
+                    console.log(`Removed ${dept} from departments`);
                     selector();
                 });
             });
@@ -234,7 +242,9 @@ const removeDepartment = () => {
 
 //remove role
 const removeRole = async () => {
-    const rolesList = await getRoles().map((role) => ({ value: role.id, name: role.title }));
+    const roles = await getRoles();
+    const rolesList = roles.map((role) => ({ value: role.id, name: role.title }));
+    console.log(rolesList);
     const selectedRole = await inquirer.prompt([{
         type: 'list',
         name: 'id',
@@ -244,11 +254,11 @@ const removeRole = async () => {
     const confirmRemove = await inquirer.prompt([{
         type: 'confirm',
         name: 'confirm',
-        message: `Are you sure you want to remove ${selectedRole.id}?`
+        message: `Are you sure you want to remove ${rolesList[selectedRole.id].name}?`
     }])
     if (confirmRemove.confirm) {
         db.query('DELETE FROM roles WHERE id = ?', selectedRole.id);
-        console.log(`Removed ${selectedRole.id} from roles`);
+        console.log(`Removed ${rolesList[selectedRole.id].name} from roles`);
     } else {
         console.log('Cancelled');
     }
@@ -257,22 +267,23 @@ const removeRole = async () => {
 
 //remove employee
 const removeEmployee = async () => {
-    const employees = db.query('SELECT * FROM employees');
-    console.log(employees);
+    const employees = await getEmployees();
+    const employeesList = employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }));
+    console.log(employeesList);
     const selectedEmployee = await inquirer.prompt([{
         type: 'list',
         name: 'id',
         message: 'Which employee would you like to remove?',
-        choices: employees.map((employee) => ({ value: employee.id, name: employee.first_name + ' ' + employee.last_name }))
+        choices: employeesList
     }])
     const confirmRemove = await inquirer.prompt([{
         type: 'confirm',
         name: 'confirm',
-        message: `Are you sure you want to remove ${selectedEmployee.id}?`
+        message: `Are you sure you want to remove ${employeesList[selectedEmployee.id].name}?`
     }])
     if (confirmRemove.confirm) {
         db.query('DELETE FROM employees WHERE id = ?', selectedEmployee.id);
-        console.log(`Removed ${selectedEmployee.id} from employees`);
+        console.log(`Removed ${employeesList[selectedEmployee.id].name} from employees`);
     } else {
         console.log('Cancelled');
     }
@@ -316,7 +327,7 @@ const updateEmployee = async () => {
             }])
 
             if (confirmUpdateRole.confirm) {
-                await db.query('UPDATE employees SET role_id = ? WHERE id = ?', [updateRole.id, selectedEmployee.id]);
+                db.query('UPDATE employees SET role_id = ? WHERE id = ?', [updateRole.id, selectedEmployee.id]);
                 console.log(`Updated ${selectedEmployee.id}'s role to ${updateRole.id}`);
             } else {
                 console.log('Cancelled');
