@@ -47,6 +47,8 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Github Link
 
+[GitHub](https://github.com/kumih0/mod12-emptrack)
+
 ### pseudo code for da homies
 i'm an idiot
 
