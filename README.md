@@ -74,6 +74,7 @@ https://drive.google.com/file/d/1fJMWS2pELD3fBOKYPtBS6QLSTE5Q4nUB/view
 GitHub: https://github.com/kumih0/mod12-emptrack
 
 ### pseudo code for da homies
+```
 i'm an idiot
 
 -schema layout tables n their cols/rows blahblah
@@ -101,3 +102,5 @@ server.js
     -update: emp role
         -select empname list
         -select role list
+
+```
