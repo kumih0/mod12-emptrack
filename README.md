@@ -67,7 +67,7 @@ node server.js
 
 ## Video Demo Link
 
-https://drive.google.com/file/d/1fJMWS2pELD3fBOKYPtBS6QLSTE5Q4nUB/view 
+[VIDEO WALKTHROUGH HERE](https://drive.google.com/file/d/1fJMWS2pELD3fBOKYPtBS6QLSTE5Q4nUB/view)
 
 ## Github Link
 
