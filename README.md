@@ -35,11 +35,11 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Description
 
-    - Created database in SQL and schema to describe how each data table is configured and their relationship to other tables via foreign keys
-    - Created seed data in sql file to populate database following columns laid out in schema
-    - Inside server file, broke down main menu selection as main prompt, then series of switch cases to call diff functions
-    - After making switch case/menu list, created the repsective functions with inuquirer to prompt any follow up questions or validations for user input
-    - After returning back to the work from learning more on back end, challenged myself to convert add/remove/update functions as async/await to improve readability and organize to match my thought process
+- Created database in SQL and schema to describe how each data table is configured and their relationship to other tables via foreign keys
+- Created seed data in sql file to populate database following columns laid out in schema
+- Inside server file, broke down main menu selection as main prompt, then series of switch cases to call diff functions
+- After making switch case/menu list, created the repsective functions with inuquirer to prompt any follow up questions or validations for user input
+- After returning back to the work from learning more on back end, challenged myself to convert add/remove/update functions as async/await to improve readability and organize to match my thought process
 > *Worked within a sandbox file (since removed) to maintain old code and break apart each piece of the function and test it to see where things can be moved or where it was breaking.
 > * referenced following code for better understanding of async/await in sql:
 > * [Async/Await in SQL gist](https://gist.github.com/midnightcodr/bd8f9cd4414f5571774c141d1e0865d8)
