@@ -233,7 +233,7 @@ const removeDepartment = () => {
                 //i think it's because despite saving the answers.id-1 as a variable 
                 db.query('DELETE FROM departments WHERE id = ?', answers.id, function (err, results) {
                     if (err) throw err;
-                    console.log(`Removed department ${selected[0].name} successfully`);
+                    console.log(`Removed department ${answers.id} successfully`);
                     selector();
                 });
             });
