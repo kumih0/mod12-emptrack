@@ -41,9 +41,31 @@ THEN I am prompted to select an employee to update and their new role and this i
 > *Worked within a sandbox file (since removed) to maintain old code and break apart each piece of the function and test it to see where things can be moved or where it was breaking.
      > *referenced following code for better understanding of async/await in sql:
         > * [Async/Await in SQL gist](https://gist.github.com/midnightcodr/bd8f9cd4414f5571774c141d1e0865d8)
+
+## Installation
+
+To install dependencies, run the following:
+
+```
+npm i
+```
+
+Then use mysql shell to run schema and seed files to populate database
+
+```sql
+source db/schema.sql
+source db/seeds.sql
+```
+
+And finally, run the following command to start the application
+
+```
+node server.js
+```
+
 ## Video Demo Link
 
-
+[Video Demo](https://drive.google.com/file/d/1fJMWS2pELD3fBOKYPtBS6QLSTE5Q4nUB/view)
 
 ## Github Link
 
