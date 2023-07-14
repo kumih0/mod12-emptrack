@@ -14,13 +14,15 @@ SO THAT I can organize and plan my business
 ```md
 GIVEN a command-line application that accepts user input
 WHEN I start the application
-THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
+THEN I am presented with the following options: view all departments, view all roles, 
+view all employees, add a department, add a role, add an employee, and update an employee role
 WHEN I choose to view all departments
 THEN I am presented with a formatted table showing department names and department ids
 WHEN I choose to view all roles
 THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
 WHEN I choose to view all employees
-THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+THEN I am presented with a formatted table showing employee data, including employee ids, 
+first names, last names, job titles, departments, salaries, and managers that the employees report to
 WHEN I choose to add a department
 THEN I am prompted to enter the name of the department and that department is added to the database
 WHEN I choose to add a role
@@ -39,8 +41,8 @@ THEN I am prompted to select an employee to update and their new role and this i
     - After making switch case/menu list, created the repsective functions with inuquirer to prompt any follow up questions or validations for user input
     - After returning back to the work from learning more on back end, challenged myself to convert add/remove/update functions as async/await to improve readability and organize to match my thought process
 > *Worked within a sandbox file (since removed) to maintain old code and break apart each piece of the function and test it to see where things can be moved or where it was breaking.
-     > *referenced following code for better understanding of async/await in sql:
-        > * [Async/Await in SQL gist](https://gist.github.com/midnightcodr/bd8f9cd4414f5571774c141d1e0865d8)
+> * referenced following code for better understanding of async/await in sql:
+> * [Async/Await in SQL gist](https://gist.github.com/midnightcodr/bd8f9cd4414f5571774c141d1e0865d8)
 
 ## Installation
 
@@ -65,11 +67,11 @@ node server.js
 
 ## Video Demo Link
 
-[Video Demo](https://drive.google.com/file/d/1fJMWS2pELD3fBOKYPtBS6QLSTE5Q4nUB/view)
+https://drive.google.com/file/d/1fJMWS2pELD3fBOKYPtBS6QLSTE5Q4nUB/view 
 
 ## Github Link
 
-[GitHub](https://github.com/kumih0/mod12-emptrack)
+GitHub: https://github.com/kumih0/mod12-emptrack
 
 ### pseudo code for da homies
 i'm an idiot
